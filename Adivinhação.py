@@ -1,9 +1,11 @@
+import random;
 print("################################")
 print("######Jogo de Adivinhação#######")
 print("################################")
 
 
-number_secret = 12
+number_secret = round(random.random() * 100)
+print(number_secret);
 
 
 
