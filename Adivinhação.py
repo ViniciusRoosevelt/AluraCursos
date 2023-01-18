@@ -7,7 +7,7 @@ print("################################")
 
 
 
-total_de_tentativas = 3
+
 rodada = 0
 # while(total_de_tentativas != 0):
 #     acertou = number_kick == number_secret
@@ -36,14 +36,17 @@ rodada = 0
 print("Escolha um nível 1- 1 a 10 Fácil 2- 1 a 100 3 - 1 a 1000")
 level = int(input("Insira o nível: "))
 if(level == 1):
+        total_de_tentativas = 4
         number_secret = round(random.randrange(1,11))
     
         print(number_secret)
 elif(level == 2):
+        total_de_tentativas = 10
         number_secret = round(random.randrange(1,101))
         print(number_secret)
 else:
         number_secret = round(random.randrange(1,1001))
+        total_de_tentativas = 16
         print(number_secret)
 
 for rodada in range(0,total_de_tentativas):
