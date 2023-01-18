@@ -4,7 +4,7 @@ print("######Jogo de Adivinhação#######")
 print("################################")
 
 
-number_secret = round(random.random() * 100)
+number_secret = round(random.randrange(1,101))
 print(number_secret);
 
 
