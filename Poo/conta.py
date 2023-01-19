@@ -7,11 +7,12 @@ class Conta:
         self.limite = limite
 
 
-def initi():
-    conta = Conta(1,"Vinicius",500,1000.0)
-    print(conta.titular)
+    def criar(numero,titular,saldo,limite):
+        conta = Conta(numero,titular,saldo,limite)
+        print("Conta Criada id:",conta.numero)
+    def saldo(self):
+        self.saldo
+
     
 
 
-if(__name__ == "__main__"):
-    initi()
