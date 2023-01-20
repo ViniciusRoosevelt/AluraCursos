@@ -14,9 +14,9 @@ admin.site.register(Aluno, Alunos)
 
 
 class Cursos(admin.ModelAdmin):
-    list_display = ('id', 'código_curos', 'descrição', 'nível')
-    list_display_links = ('id', 'código_curos', 'descrição')
-    search_fields = ['código_curos']
+    list_display = ('id', 'código_curso', 'descrição', 'nível')
+    list_display_links = ('id', 'código_curso', 'descrição')
+    search_fields = ['código_curso']
     list_per_page = 10
 
 
