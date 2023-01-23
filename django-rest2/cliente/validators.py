@@ -1,8 +1,10 @@
 import re
 
+from validate_docbr import CPF
 
 def validate_cpf(cpf):
-    return len(cpf) == 11 or cpf.isalpha()
+    cpf_validate = CPF()
+    return cpf_validate.validate(cpf)
 
 
 def validate_rg(rg):
