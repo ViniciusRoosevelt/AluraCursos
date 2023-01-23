@@ -1,6 +1,7 @@
 import re
 from rest_framework import serializers
 from cliente.models import Cliente
+from cliente.validators import *
 
 
 class ClienteSerializer(serializers.ModelSerializer):
@@ -8,27 +9,18 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = '__all__'
 
-    def validate_cpf(self, cpf):
-        if len(cpf) != 11 or cpf.isalpha():
-            raise serializers.ValidationError('Cpf must be 11 characters numeric')
-        return cpf
-
-    def validate_rg(self, rg):
-        if len(rg) != 9:
-            raise serializers.ValidationError('Rg must be 9 characters')
-        return rg
-
-    def validate_celular(self, celular):
-        if len(celular) <= 11 or celular.isalpha():
-            raise serializers.ValidationError('Celular must be 12 characters numeric')
-        return celular
-
-    def validate_email(self, email):
-        if not re.search(r"^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$", email):
-            raise serializers.ValidationError('Format the email invalid')
-        return email
-
-    def validate_nome(self, nome):
-        if not nome.isalpha():
-            raise serializers.ValidationError('Nome invalido')
-        return nome
+    def validate(self, data):
+        if not validate_cpf(data['cpf']):
+            raise serializers.ValidationError({'CPF': 'CPF inválido'})
+        if not validate_rg(data['rg']):
+            raise serializers.ValidationError(
+                {'Rg': 'Rg must be 9 characters'})
+        if not validate_celular(data['celular']):
+            raise serializers.ValidationError(
+                {'Celular': 'Celular must be 11 characters numeric'})
+        if not validate_email(data['email']):
+            raise serializers.ValidationError(
+                {'Email': 'Format the email invalid'})
+        if not validate_nome(data['nome']):
+            raise serializers.ValidationError({'Nome': 'Nome invalido'})
+        return data
