@@ -8,7 +8,7 @@ class Cliente(models.Model):
     rg = models.CharField(blank=False, max_length=9, unique=True)
     email = models.EmailField(blank=False, max_length=30, unique=True)
     cpf = models.CharField(blank=False, max_length=11, unique=True)
-    celular = models.CharField(max_length=12)
+    celular = models.CharField(max_length=14)
     data_nascimento = models.DateTimeField()
     ativo = models.BooleanField()
 
