@@ -1,6 +1,9 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
 body{
-
-  
     background-color: black;
     color: #F6F6F6;
 }
@@ -11,3 +14,15 @@ strong{
 }
 
 
+.inline-row{
+    display: block;
+    justify-items: center;
+}
+.paragrafo{
+    word-break: break-all;
+}
+.image{
+    display: inline;
+    justify-content: center;
+    align-self: center;
+}
