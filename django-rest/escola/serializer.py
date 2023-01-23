@@ -1,7 +1,13 @@
 
 from rest_framework import serializers
 
-from escola.models import Aluno, Curso, Matricula
+from escola.models import Aluno, Curso, Matricula, Image
+
+
+class AlunoSerializerV2(serializers.ModelSerializer):
+    class Meta:
+        model = Aluno
+        fields = ['id', 'nome', 'celular', 'rg', 'cpf', 'data_nascimento']
 
 
 class AlunoSerializer(serializers.ModelSerializer):
@@ -22,16 +28,27 @@ class MatriculasSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = '__all__'
+
+
 class MatriculasAlunoSerializer(serializers.ModelSerializer):
     curso = serializers.ReadOnlyField(source='curso.descrição')
     periodo = serializers.SerializerMethodField()
+
     class Meta:
         model = Matricula
         fields = ['curso', 'periodo']
-    def get_periodo(self,object):
+
+    def get_periodo(self, object):
         return object.get_periodo_display()
+
+
 class AlunosMatriculadosSerializer(serializers.ModelSerializer):
     aluno_nome = serializers.ReadOnlyField(source='aluno.nome')
+
     class Meta:
         model = Matricula
         fields = ['aluno_nome']

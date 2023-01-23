@@ -1,10 +1,10 @@
 from django.contrib import admin
-from escola.models import Aluno, Curso,Matricula
+from escola.models import Aluno, Curso, Matricula,Image
 # Register your models here.
 
 
 class Alunos(admin.ModelAdmin):
-    list_display = ('id', 'nome', 'rg', 'cpf', 'data_nascimento')
+    list_display = ('id', 'nome', 'rg', 'cpf', 'data_nascimento',)
     list_display_links = ('id', 'nome')
     search_fields = ['nome']
     list_per_page = 20
@@ -24,7 +24,16 @@ admin.site.register(Curso, Cursos)
 
 
 class Matriculas(admin.ModelAdmin):
-    list_display = ('id', 'aluno', 'curso','periodo')
+    list_display = ('id', 'aluno', 'curso', 'periodo')
     list_display_links = ['id']
-admin.site.register(Matricula,Matriculas)
- 
+
+
+admin.site.register(Matricula, Matriculas)
+
+
+class Images(admin.ModelAdmin):
+    list_display = ('id', 'descricao', 'foto')
+    list_display_links = ('id', 'descricao')
+
+
+admin.site.register(Image, Images)

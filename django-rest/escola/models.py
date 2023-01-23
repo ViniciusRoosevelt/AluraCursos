@@ -9,6 +9,7 @@ class Aluno(models.Model):
     rg = models.CharField(max_length=9)
     cpf = models.CharField(max_length=11)
     data_nascimento = models.DateField()
+    celular = models.CharField(max_length=13,default='')
 
     def __str__(self):
         return self.nome
@@ -33,3 +34,9 @@ class Matricula(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     periodo = models.CharField(
         max_length=1, choices=Eperiodo, blank=False, null=False, default='M')
+class Image(models.Model):
+    descricao = models.CharField(max_length=30)
+    foto = models.ImageField()
+
+    def __str__(self):
+        return self.descricao
