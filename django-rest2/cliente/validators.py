@@ -10,7 +10,10 @@ def validate_rg(rg):
 
 
 def validate_celular(celular):
-    return len(celular) <= 11 or celular.isalpha()
+    "Verifica se está no formato de (11 91234-1234)"
+    modelo = '[0-9]{2} [0-9]{5}-[0-9]{4}'
+    responsta = re.findall(modelo,celular)
+    return responsta
 
 
 def validate_email(email):
