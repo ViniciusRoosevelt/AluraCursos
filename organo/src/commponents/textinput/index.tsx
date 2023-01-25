@@ -5,9 +5,8 @@ const TextInput = (props: {
   label: string;
   placeholder: string;
   value: string | undefined;
-  onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
 }) => {
-
   return (
     <div className="text-field">
       <label>{props.label}</label>

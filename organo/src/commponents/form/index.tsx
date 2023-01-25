@@ -4,20 +4,25 @@ import { DropDownMenuItem } from "../dropDownMenuItem";
 import TextInput from "../textinput";
 import "./style.css";
 
-export const Form = () => {
-  const [nome, setNome] = useState<string>("");
-  const [cargo, setCargo] = useState<string>("");
-  const [image, setImage] = useState<string>("");
-  const [time, setTime] = useState<string>("Front-End");
-
-  const array = ["Front-End", "Back-End"];
+export const Form = (props: { addColaborador: any; times: string[] }) => {
+  let [nome, setNome] = useState<string>("");
+  let [cargo, setCargo] = useState<string>("");
+  let [image, setImage] = useState<string>("");
+  let [time, setTime] = useState<string>("Front-End");
 
   const onSave: React.FormEventHandler<HTMLFormElement> = (
     event: React.SyntheticEvent<EventTarget>
   ) => {
-    event.preventDefault();
-    console.log(nome, image, cargo, time);
+    if (nome == "" || cargo == "" || image == "") {
+      alert("Preencha todos os campos!");
+    }
+    props.addColaborador({ nome, cargo, image, time });
 
+    event.preventDefault();
+    setNome("");
+    setCargo("");
+    setImage("");
+    debugger;
   };
   return (
     <section className="form">
@@ -27,29 +32,29 @@ export const Form = () => {
           label="Nome"
           required={true}
           placeholder="Digite Seu Nome"
-          value={`${nome}`}
+          value={nome}
           onChange={(event) => setNome(event.target!.value)}
         />
         <TextInput
           label="Cargo"
           placeholder="Digite Seu Cargo"
           required={true}
-          value={`${cargo}`}
+          value={cargo}
           onChange={(event) => setCargo(event.target!.value)}
         />
         <TextInput
           label="Image"
           placeholder="Informe o endereço da image"
           required={true}
-          value={`${image}`}
+          value={image}
           onChange={(event) => setImage(event.target!.value)}
         />
         <DropDownMenuItem
           required={true}
           label="Times"
-          itens={array}
+          itens={props.times}
           value={time}
-          onChange={event => setTime(event.target!.value)}
+          onChange={(event) => setTime(event.target!.value)}
         />
         <Button>Criar Card</Button>
       </form>
