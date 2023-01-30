@@ -16,11 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from rest_framework import routers
+from rest_framework import views
+from crud.views import *
 from django.conf.urls.static import static
-
+router = routers.DefaultRouter()
+router.register('images', ImageViewSet, basename='Images')
+router.register('all-user', AllUser, basename='AllUsers')
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include(router.urls)),
+    path('register/', RegisterViewSet.as_view(), name='auth_register'),
+    path('users/<int:pk>/images/', ImageCreatedFromUser.as_view(), name='image_created_from_user'),
+    path('api-auth/', include('rest_framework.urls')),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
