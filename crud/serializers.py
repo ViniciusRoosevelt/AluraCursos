@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view
 
 
 class ImagesSerializer(serializers.ModelSerializer):
-    creator = serializers.ReadOnlyField(source='creator_username')
-    creator_id = serializers.ReadOnlyField(source='creator_id')
+    creator = serializers.ReadOnlyField(source='creator.username')
+    creator_id = serializers.ReadOnlyField(source='creator.id')
     image_url = serializers.ImageField(required=False)
 
     class Meta:
@@ -57,15 +57,31 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+class GetUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name',)
+
+
 class AllUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name',)
 
 
-class ImageCreatedFromUserSerializer(serializers.ModelField):
-    creator = serializers.ReadOnlyField(source='creator_username')
-    creator_id = serializers.ReadOnlyField(source='creator_id')
+class ImageCreatedFromUserSerializer(serializers.ModelSerializer):
+    creator = serializers.ReadOnlyField(source='creator.username')
+    creator_id = serializers.ReadOnlyField(source='creator.id')
+    image_url = serializers.ImageField(required=False)
+
     class Meta:
         model = Imagem
-        fields = ['creator','creator_id']
+        fields = ['id', 'creator', 'creator_id', 'image_url']
+
+
+class GetAllImagesFromUserSerializer(serializers.ModelSerializer):
+    image_url = serializers.ImageField(required=False)
+
+    class Meta:
+        model = Imagem
+        fields = ['creator', 'creator_id', 'image_url']

@@ -22,12 +22,16 @@ from crud.views import *
 from django.conf.urls.static import static
 router = routers.DefaultRouter()
 router.register('images', ImageViewSet, basename='Images')
-router.register('all-user', AllUser, basename='AllUsers')
+router.register('all-user', AllUserViewSet, basename='AllUsers')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('register/', RegisterViewSet.as_view(), name='auth_register'),
-    path('users/<int:pk>/images/', ImageCreatedFromUser.as_view(), name='image_created_from_user'),
+    path('users/<int:pk>/images/', AllImagesCreatedFromUser.as_view(),
+         name='all_images_from_user'),
+    path('users/<int:pk>/images/<int:id>',
+         ImageCreatedFromUser.as_view(), name='image_created_from_user'),
+    path('users/<int:pk>/', GetUserViewSet.as_view(), name='get_user_from_id'),
     path('api-auth/', include('rest_framework.urls')),
 ]
 
