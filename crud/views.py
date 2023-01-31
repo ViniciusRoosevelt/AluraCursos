@@ -1,17 +1,15 @@
-from django.http import HttpResponse
+from PIL import Image
+
 from rest_framework import viewsets, status
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework import generics
 from rest_framework import response
-from django.http import HttpResponse
-from django.template import loader
-from PIL import Image
 import os
+
 from .models import *
 from .serializers import *
-# Create your views here.
+
 
 
 class ImageViewSet(viewsets.ModelViewSet):
@@ -19,7 +17,7 @@ class ImageViewSet(viewsets.ModelViewSet):
     serializer_class = ImagesSerializer
     parse_classes = (MultiPartParser, FormParser)
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
@@ -40,24 +38,27 @@ class GetUserViewSet(generics.ListAPIView):
         return queryset
 
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
     serializer_class = GetUserSerializer
 
 
-class AllUserViewSet(viewsets.ModelViewSet):
+class AllUserViewSet(generics.ListAPIView):
     "Lista todos os usuarios"
-    queryset = User.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
     serializer_class = AllUserSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        return queryset
 
 
 class AllImagesCreatedFromUser(generics.ListAPIView):
     """Lista as imagens de um usuário"""
 
     serializer_class = ImageCreatedFromUserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get_queryset(self):
         queryset = Imagem.objects.filter(creator_id=self.kwargs['pk'])
@@ -69,7 +70,7 @@ class ImageCreatedFromUser(generics.ListAPIView):
 
     serializer_class = ImageCreatedFromUserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get_queryset(self):
         queryset = Imagem.objects.filter(
@@ -94,6 +95,8 @@ class ImageCreatedFromUser(generics.ListAPIView):
 class FileImageCreatedFromUser(generics.ListAPIView):
 
     serializer_class = FileImageCreatedFromUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get(self, request, *args, **kwargs):
         queryset = Imagem.objects.filter(
@@ -113,8 +116,12 @@ class FileImageCreatedFromUser(generics.ListAPIView):
 
 class FileImageCreatedFromUserUploadViewSet(viewsets.ViewSet):
     serializers_class = FileImageCreatedFromUserUploadSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+
     def list(self, request):
         return response.Response("GET API")
+
     def create(self, request):
         file_uploaded = request.FILES.get('file_uploaded')
         content_type = file_uploaded.content_type

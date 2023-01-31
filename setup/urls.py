@@ -17,12 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from rest_framework import routers
-from crud.urls import *
 from crud.views import *
 from django.conf.urls.static import static
 router = routers.DefaultRouter()
 router.register('images', ImageViewSet, basename='Images')
-router.register('all-user', AllUserViewSet, basename='AllUsers')
 router.register('upload-file', FileImageCreatedFromUserUploadViewSet,
                 basename='Upload_file_image_created_from_user')
 urlpatterns = [
