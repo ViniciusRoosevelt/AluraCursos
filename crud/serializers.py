@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from rest_framework.serializers import Serializer, FileField
 from .models import Imagem
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -85,3 +87,17 @@ class GetAllImagesFromUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Imagem
         fields = ['creator', 'creator_id', 'image_url']
+
+
+class FileImageCreatedFromUserSerializer(serializers.ModelSerializer):
+    image_url = serializers.ImageField(required=False)
+
+    class Meta:
+        model = Imagem
+        fields = ['image_url']
+class FileImageCreatedFromUserUploadSerializer(Serializer):
+    file_upload = FileField()
+    image_url = serializers.ImageField(required=False)
+    class Meta:
+        model = Imagem
+        fields = ['file_upload','image_url']

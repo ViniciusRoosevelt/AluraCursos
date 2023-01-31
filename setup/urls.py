@@ -23,6 +23,8 @@ from django.conf.urls.static import static
 router = routers.DefaultRouter()
 router.register('images', ImageViewSet, basename='Images')
 router.register('all-user', AllUserViewSet, basename='AllUsers')
+router.register('upload-file', FileImageCreatedFromUserUploadViewSet,
+                basename='Upload_file_image_created_from_user')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
@@ -31,6 +33,8 @@ urlpatterns = [
          name='all_images_from_user'),
     path('users/<int:pk>/images/<int:id>',
          ImageCreatedFromUser.as_view(), name='image_created_from_user'),
+    path('users/<int:pk>/images/<int:id>/file',
+         FileImageCreatedFromUser.as_view(), name='file_image_created_from_user'),
     path('users/<int:pk>/', GetUserViewSet.as_view(), name='get_user_from_id'),
     path('api-auth/', include('rest_framework.urls')),
 ]

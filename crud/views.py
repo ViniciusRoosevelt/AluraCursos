@@ -1,9 +1,13 @@
+from django.http import HttpResponse
 from rest_framework import viewsets, status
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework import generics
 from rest_framework import response
+from django.http import HttpResponse
+from django.template import loader
+from PIL import Image
 import os
 from .models import *
 from .serializers import *
@@ -30,6 +34,7 @@ class RegisterViewSet(generics.CreateAPIView):
 
 class GetUserViewSet(generics.ListAPIView):
     "Mostra os dados de um usuário"
+
     def get_queryset(self):
         queryset = User.objects.filter(id=self.kwargs['pk'])
         return queryset
@@ -71,6 +76,7 @@ class ImageCreatedFromUser(generics.ListAPIView):
             creator_id=self.kwargs['pk'], id=self.kwargs['id'])
         return queryset
     "Remove a imagem de um usuário"
+
     def delete(self, request, *args, **kwargs):
         queryset = Imagem.objects.filter(
             creator_id=self.kwargs['pk'], id=self.kwargs['id'])
@@ -83,3 +89,35 @@ class ImageCreatedFromUser(generics.ListAPIView):
             return response.Response(status=status.HTTP_200_OK)
         else:
             return response.Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class FileImageCreatedFromUser(generics.ListAPIView):
+
+    serializer_class = FileImageCreatedFromUserSerializer
+
+    def get(self, request, *args, **kwargs):
+        queryset = Imagem.objects.filter(
+            creator_id=self.kwargs['pk'], id=self.kwargs['id'])
+        path = str(queryset.get().image_url.path)
+        print(path)
+
+        if os.path.exists(path):
+            file = Image.open(path, 'r')
+
+            file.show()
+            return response.Response(status=status.HTTP_200_OK)
+
+        else:
+            return response.Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class FileImageCreatedFromUserUploadViewSet(viewsets.ViewSet):
+    serializers_class = FileImageCreatedFromUserUploadSerializer
+    def list(self, request):
+        return response.Response("GET API")
+    def create(self, request):
+        file_uploaded = request.FILES.get('file_uploaded')
+        content_type = file_uploaded.content_type
+        response = "POST API and you have uploaded a {} file".format(
+            content_type)
+        return response.Response(response)
