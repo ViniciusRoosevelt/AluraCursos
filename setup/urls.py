@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from rest_framework import routers
-from rest_framework import views
+from crud.urls import *
 from crud.views import *
 from django.conf.urls.static import static
 router = routers.DefaultRouter()
@@ -28,14 +28,8 @@ router.register('upload-file', FileImageCreatedFromUserUploadViewSet,
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('crud/', include('crud.urls')),
     path('register/', RegisterViewSet.as_view(), name='auth_register'),
-    path('users/<int:pk>/images/', AllImagesCreatedFromUser.as_view(),
-         name='all_images_from_user'),
-    path('users/<int:pk>/images/<int:id>',
-         ImageCreatedFromUser.as_view(), name='image_created_from_user'),
-    path('users/<int:pk>/images/<int:id>/file',
-         FileImageCreatedFromUser.as_view(), name='file_image_created_from_user'),
-    path('users/<int:pk>/', GetUserViewSet.as_view(), name='get_user_from_id'),
     path('api-auth/', include('rest_framework.urls')),
 ]
 
