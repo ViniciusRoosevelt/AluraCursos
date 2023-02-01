@@ -1,6 +1,14 @@
 import { Button } from "@mui/material";
 import { FormEventHandler } from "react";
-
-export const ButtonDiferent = () => {
-  return <Button type='submit' variant="contained">Sign-In</Button>;
+type ButtonStyle = {
+  type: string;
+  variant: string;
+  placeholder: string;
+};
+export const ButtonDiferent = ({ type, variant, placeholder }: ButtonStyle) => {
+  return (
+    <Button type="submit" variant="contained">
+      {placeholder}
+    </Button>
+  );
 };
