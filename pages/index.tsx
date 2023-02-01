@@ -1,23 +1,24 @@
-import {
-  Typography, FormControl,
-  Grid
-} from "@mui/material";
-import { useState } from "react";
+import { Typography, FormControl, Grid } from "@mui/material";
+import { useState, useContext } from "react";
+import { AuthContext } from "../src/context/AuthContext";
 import { ButtonDiferent } from "../src/componnets/button";
 import { TextFieldDifferent } from "../src/componnets/textfield";
+
+
+
 type SignInRequest = {
-  Email: string;
-  Password: string;
+  username: string;
+  password: string;
 };
 export default function Home() {
-  const [email, setEmail] = useState("");
+  const { LogIn } = useContext(AuthContext);
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSignIn({ Email, Password }: SignInRequest) {
-    console.log(Email, Password);
-    // setEmail(Email)
-    // setPassword(Password)
+  async function handleSignIn({ username, password }: SignInRequest) {
+    await LogIn({ username, password });
   }
+
   return (
     <Grid
       spacing={0}
@@ -51,37 +52,39 @@ export default function Home() {
         >
           Sign-In
         </Typography>
-        <form onSubmit={(event) => {
-          event.preventDefault();
-          console.log(email,password)
-        }}>
-        <FormControl >
-          <TextFieldDifferent
-            label="Email Address"
-            type="email"
-            placeholder="johndoe@gmail.com"
-            id="outlined-basic"
-            fullwidth={true}
-            margin="dense"
-            size="small"
-            value={email}
-            Onchange={(event) => {
-              setEmail(event.target.value);
-            }}
-          />
-          <TextFieldDifferent
-            label="Password"
-            placeholder="********"
-            id="outlined-basic"
-            fullwidth={true}
-            margin="dense"
-            size="small"
-            type="password"
-            value={password}
-            Onchange={(event) => setPassword(event.target.value)}
-          />
-          <ButtonDiferent />
-        </FormControl>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleSignIn({ username, password });
+          }}
+        >
+          <FormControl>
+            <TextFieldDifferent
+              label="username"
+              type="name"
+              placeholder="Teste"
+              id="outlined-basic"
+              fullwidth={true}
+              margin="dense"
+              size="small"
+              value={username}
+              Onchange={(event) => {
+                setUsername(event.target.value);
+              }}
+            />
+            <TextFieldDifferent
+              label="Password"
+              placeholder="********"
+              id="outlined-basic"
+              fullwidth={true}
+              margin="dense"
+              size="small"
+              type="password"
+              value={password}
+              Onchange={(event) => setPassword(event.target.value)}
+            />
+            <ButtonDiferent />
+          </FormControl>
         </form>
       </Grid>
     </Grid>
