@@ -1,22 +1,21 @@
 from PIL import Image
 
-from rest_framework import viewsets, status
-from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework import viewsets, status,views,permissions,generics,response
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework import generics
-from rest_framework import response
+from rest_framework_simplejwt import views
+
 import os
 
-from .models import *
-from .serializers import *
-
+from crud.models import *
+from crud.serializers import *
 
 
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Imagem.objects.all().order_by('-creation_date')
     serializer_class = ImagesSerializer
     parse_classes = (MultiPartParser, FormParser)
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def perform_create(self, serializer):
@@ -28,6 +27,10 @@ class RegisterViewSet(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = RegisterSerializer
+
+
+class MyTokenObtainPairView(views.TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 
 class GetUserViewSet(generics.ListAPIView):
@@ -79,9 +82,9 @@ class ImageCreatedFromUser(generics.ListAPIView):
     "Remove a imagem de um usuário"
 
     def delete(self, request, *args, **kwargs):
-        queryset = Imagem.objects.filter(
+        queryset = Imagem.objects.get(
             creator_id=self.kwargs['pk'], id=self.kwargs['id'])
-        path = str(queryset.get().image_url.path)
+        path = str(queryset.image_url.path)
         print(path)
         if os.path.exists(path):
             print('True')
@@ -114,17 +117,26 @@ class FileImageCreatedFromUser(generics.ListAPIView):
             return response.Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class FileImageCreatedFromUserUploadViewSet(viewsets.ViewSet):
-    serializers_class = FileImageCreatedFromUserUploadSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+class ImageUploadViewSet(APIView):
+    """Upload Images"""
+    parser_classes = [MultiPartParser,FormParser]
+    permission_classes = [permissions.AllowAny]
 
-    def list(self, request):
-        return response.Response("GET API")
+    def post(self, request,*args, **kwargs):
+        images = Imagem.objects.filter(creator_id=self.kwargs['pk'])
+        for image in images:
+            if image.name.lower() == str(request.data['name']).lower():
+                return response.Response("Duplicate name", status=status.HTTP_400_BAD_REQUEST)
+        if str(request.data['image_url']).split('.')[1] != 'png' and str(request.data['image_url']).split('.')[1] != 'jpg':
+            return response.Response("Invalid file extension. Only .jpg and .png files.", status=status.HTTP_400_BAD_REQUEST)
+        request.data.update( {'creator_id': self.kwargs['pk'] } )
+        print(request.data);
 
-    def create(self, request):
-        file_uploaded = request.FILES.get('file_uploaded')
-        content_type = file_uploaded.content_type
-        response = "POST API and you have uploaded a {} file".format(
-            content_type)
-        return response.Response(response)
+
+        
+        serializer = FileImageCreatedFromUserUploadSerializer(data = request.data)
+
+        
+        if serializer.is_valid():
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

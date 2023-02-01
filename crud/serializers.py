@@ -5,7 +5,8 @@ from .models import Imagem
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
-from rest_framework.decorators import api_view
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class ImagesSerializer(serializers.ModelSerializer):
@@ -17,6 +18,16 @@ class ImagesSerializer(serializers.ModelSerializer):
         model = Imagem
         fields = ['id', 'creator', 'creator_id',
                   'title', 'description', 'image_url']
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['username'] = user.username
+        token['email'] = user.email
+        return token
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -95,9 +106,12 @@ class FileImageCreatedFromUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Imagem
         fields = ['image_url']
+
+
 class FileImageCreatedFromUserUploadSerializer(Serializer):
     file_upload = FileField()
     image_url = serializers.ImageField(required=False)
+
     class Meta:
         model = Imagem
-        fields = ['file_upload','image_url']
+        fields = ['file_upload', 'image_url']
