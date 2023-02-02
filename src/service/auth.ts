@@ -15,6 +15,7 @@ type RegisterRequestData = {
 };
 
 type User = {
+  id : string;
   email: String;
   username: String;
 };
@@ -36,6 +37,7 @@ export default async function LoginRequest(data: LoginRequestData) {
     return {
       token: acess,
       user: {
+        id : user.id,
         username: user.username,
         email: user.email,
       },
@@ -65,6 +67,7 @@ export async function recoverUserInformation(token: string) {
   const user: User = jwt_decode(token);
   return {
     user: {
+      id : user.id,
       username: user.username,
       email: user.email,
     },

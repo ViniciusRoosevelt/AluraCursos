@@ -6,6 +6,10 @@ import { TextFieldDifferent } from "../src/componnets/textfield";
 
 import { useState, useContext } from "react";
 import { AuthContext } from "../src/context/AuthContext";
+import { GetServerSideProps } from "next";
+import { parseCookies } from "nookies";
+import { getApiClient } from "../src/service/axios";
+import { AppBarDifferent } from "../src/componnets/appbar";
 
 
 
@@ -14,7 +18,7 @@ type SignInRequest = {
   password: string;
 };
 export default function Home() {
-  const { LogIn } = useContext(AuthContext);
+  const { LogIn,changePage } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -23,6 +27,9 @@ export default function Home() {
   }
 
   return (
+    <>
+        <AppBarDifferent title={"Login"} buttonLabel={"Register"} onClickButton={() => {changePage("/register")}} />  
+    
     <Grid
       spacing={0}
       style={{ minHeight: "100vh", background: "#1c1917" }}
@@ -63,7 +70,7 @@ export default function Home() {
         >
           <FormControl>
             <TextFieldDifferent
-              label="username"
+              label="Username"
               type="name"
               placeholder="Teste"
               id="outlined-basic"
@@ -91,5 +98,25 @@ export default function Home() {
         </form>
       </Grid>
     </Grid>
+    </>
   );
 }
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const apiClient = getApiClient(ctx);
+  const { ["next-auth"]: token } = parseCookies(ctx);
+
+  if (token) {
+    return {
+      redirect: {
+        destination: "/gallery",
+        permanent: true,
+      },
+    };
+  }
+
+
+
+  return {
+    props: {},
+  };
+};

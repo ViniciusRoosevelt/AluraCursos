@@ -7,6 +7,7 @@ import LoginRequest, {
   RegisterRequest,
 } from "../service/auth";
 type User = {
+  id : string;
   username: string;
   email: string;
 };
@@ -27,6 +28,7 @@ type AuthContextType = {
   user: User;
   LogIn: (data: LoginData) => Promise<void>;
   Register: (data: RegisterData) => Promise<void>;
+  changePage(routerPage: string): void;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -36,8 +38,8 @@ export function AuthProvider({ children }: any) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    const { "nextauth.token": token } = parseCookies();
-
+    const { "next-auth": token } = parseCookies();
+    console.log(token);
     if (token) {
       recoverUserInformation(token).then((response) => {
         setUser(response.user);
@@ -58,7 +60,7 @@ export function AuthProvider({ children }: any) {
 
     setUser(user);
 
-    Router.push("/teste");
+    Router.push("/gallery");
   }
   async function Register({
     username,
@@ -79,8 +81,18 @@ export function AuthProvider({ children }: any) {
     });
     Router.push("/");
   }
+
+
+  
+    function changePage(routerPage: string){
+     Router.push(`${routerPage}`)
+    
+  }
+
+
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, LogIn, Register }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, LogIn, Register, changePage }}>
       {children}
     </AuthContext.Provider>
   );
