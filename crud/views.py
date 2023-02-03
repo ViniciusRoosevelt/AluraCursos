@@ -6,7 +6,7 @@ from rest_framework import (generics, permissions, response, status, views,
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.views import APIView
 from rest_framework_simplejwt import views
-from django.http import JsonResponse
+
 from crud.models import *
 from crud.serializers import *
 

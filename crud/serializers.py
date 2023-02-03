@@ -1,12 +1,12 @@
 from rest_framework import serializers
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import Serializer, FileField
 from .models import Imagem
+
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class ImagesSerializer(serializers.ModelSerializer):
