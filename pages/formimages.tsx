@@ -1,8 +1,7 @@
 import { Button, FormControl, Grid, Typography } from "@mui/material";
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
-import { ChangeEvent, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { AppBarDifferent } from "../src/componnets/appbar";
 import { ButtonDiferent } from "../src/componnets/button";
 import { TextFieldDifferent } from "../src/componnets/textfield";
@@ -18,22 +17,25 @@ export default function FormImage() {
   const apiClient = getApiClient();
 
   const changeHandler = (event: any) => {
+
     setSelectedFile(event.target.files[0]);
     console.log(event.target.files[0])
     setIsFilePicked(true);
   };
   const handleSubmission = () => {
     const formData = new FormData();
+    formData.append("image_url", selectedFile);
+    formData.append("title", `${title}`);
+    formData.append("description", `${description}`);
 
-    formData.append("file", selectedFile);
-    
-    const reponse = apiClient.post(`api/users/${user?.id}/images/file/`, {
+     apiClient.post(`/images/`, formData, {
       headers: {
-        "Content-Type": `"multipart/form-data"; image_url=${formData}  description=${description} title=${title}`,
+        "Content-Type": "multipart/form-data",
       },
-    });
-    console.log(reponse);
+    }).then(response => console.log(response))
+    alert('Image Upload Success')
     setIsFilePicked(false);
+    setSelectedFile(null);
   };
   return (
     <>
@@ -77,7 +79,10 @@ export default function FormImage() {
           >
             Form Image
           </Typography>
-          <form>
+          <form onSubmit={event => {
+            event.preventDefault();
+            handleSubmission()
+            }}>
             <FormControl>
               <TextFieldDifferent
                 label="Título da Image"
@@ -113,16 +118,18 @@ export default function FormImage() {
                   type="file"
                   name="file"
                   onChange={changeHandler}
-                  hidden
+                  
                 />
               </Button>
 
-              <ButtonDiferent
-                type="submit"
-                variant="contained"
-                placeholder="Enviar Imagem"
-                onClick={() => handleSubmission}
-              />
+         
+                <ButtonDiferent
+                  type="submit"
+                  variant="contained"
+                  placeholder="Enviar Imagem"
+
+                />
+         
             </FormControl>
           </form>
         </Grid>

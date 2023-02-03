@@ -1,21 +1,9 @@
 import {
-  Alert,
-  Avatar,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Typography,
+  Card, Grid, Typography
 } from "@mui/material";
 import { GetServerSideProps } from "next/types";
 import { parseCookies } from "nookies";
 import { useContext, useEffect, useState } from "react";
-import internal from "stream";
 import { AppBarDifferent } from "../src/componnets/appbar";
 import { CardDifferent } from "../src/componnets/card";
 import { AuthContext } from "../src/context/AuthContext";
@@ -35,10 +23,11 @@ export default function Gallery() {
   const [card, setCard] = useState<Card[]>([]);
 
   useEffect(() => {
-    api.get("/images/").then((response) => {
-      console.log(card), setCard(response.data);
-    });
-  }, []);
+    
+    card.length === 0 ? api.get(`/api/users/${user.id}/images/`).then((response) => {
+      console.log(card), setCard(response.data); 
+    }) : null;
+  }, [card]);
   const handleDeleteCard = (id_card: number, id_user: number) => {
     api.delete(`/api/users/${id_user}/images/${id_card}`);
     const copy = card.filter((item) => item.id != id_card);
