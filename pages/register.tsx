@@ -1,4 +1,4 @@
-import { Typography, FormControl, Grid } from "@mui/material";
+import { Typography, FormControl, Grid, Button } from "@mui/material";
 import { Router } from "next/router";
 import { useState, useContext } from "react";
 import { AppBarDifferent } from "../src/componnets/appbar";
@@ -54,6 +54,7 @@ export default function RegisterPage() {
         onClickButton={() => {
           changePage("/");
         }}
+        children={undefined}
       />
       <Grid
         spacing={0}

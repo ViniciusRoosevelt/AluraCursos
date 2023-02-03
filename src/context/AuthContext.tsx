@@ -48,9 +48,9 @@ export function AuthProvider({ children }: any) {
   }, []);
 
   async function LogIn({ username, password }: LoginData) {
-    const reseponse = await LoginRequest({ username, password });
-    const token = reseponse?.token;
-    const user = reseponse?.user;
+    const response = await LoginRequest({ username, password });
+    const token = response?.token;
+    const user = response?.user;
     setCookie(undefined, "next-auth", token, {
       maxAge: 60 * 5, // 5 minutos
     });

@@ -8,11 +8,11 @@ export function getApiClient(ctx?: any) {
     baseURL: "http://localhost:3001/",
   });
 
-  api.interceptors.request.use((config) => {
-    console.log(config);
+  // api.interceptors.request.use((config) => {
+  //   console.log(config);
 
-    return config;
-  });
+  //   return config;
+  // });
   // api.defaults.headers["Content-Type"] = "application/json";
   // api.defaults.headers["Accept"] = "application/json";
 

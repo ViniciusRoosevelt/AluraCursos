@@ -1,4 +1,5 @@
 import { Button, FormControl, Grid, Typography } from "@mui/material";
+import { error } from "console";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
 import { useContext, useState } from "react";
@@ -10,6 +11,7 @@ import { getApiClient } from "../src/service/axios";
 
 export default function FormImage() {
   const { changePage, user } = useContext(AuthContext);
+  console.log(user?.id);
   const [selectedFile, setSelectedFile] = useState<any>();
   const [isFilePicked, setIsFilePicked] = useState(false);
   const [title, setTitle] = useState<String>("");
@@ -17,25 +19,42 @@ export default function FormImage() {
   const apiClient = getApiClient();
 
   const changeHandler = (event: any) => {
-
     setSelectedFile(event.target.files[0]);
-    console.log(event.target.files[0])
+    console.log(event.target.files[0]);
     setIsFilePicked(true);
   };
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
     const formData = new FormData();
     formData.append("image_url", selectedFile);
     formData.append("title", `${title}`);
     formData.append("description", `${description}`);
 
-     apiClient.post(`/images/`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }).then(response => console.log(response))
-    alert('Image Upload Success')
-    setIsFilePicked(false);
-    setSelectedFile(null);
+    const response = await apiClient
+      .post(`/api/users/${user?.id}/images/file/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response != undefined) {
+          alert("Image Criada Com Sucesso");
+          setIsFilePicked(false);
+          setTitle("");
+          setDescription("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 409) {
+          alert("Title image already exists");
+        }
+        if (error.response.status === 401) {
+          alert("Usuário não está logado"), changePage("/");
+        }
+        if (error.response.status === 400) {
+          alert("Image format invalid");
+        }
+      });
   };
   return (
     <>
@@ -45,6 +64,16 @@ export default function FormImage() {
         onClickButton={() => {
           changePage("/gallery");
         }}
+        children={
+          <Button
+            color="inherit"
+            onClick={() => {
+              changePage("/users");
+            }}
+          >
+            Users
+          </Button>
+        }
       />
 
       <Grid
@@ -79,10 +108,12 @@ export default function FormImage() {
           >
             Form Image
           </Typography>
-          <form onSubmit={event => {
-            event.preventDefault();
-            handleSubmission()
-            }}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              handleSubmission();
+            }}
+          >
             <FormControl>
               <TextFieldDifferent
                 label="Título da Image"
@@ -118,18 +149,15 @@ export default function FormImage() {
                   type="file"
                   name="file"
                   onChange={changeHandler}
-                  
+                  hidden
                 />
               </Button>
 
-         
-                <ButtonDiferent
-                  type="submit"
-                  variant="contained"
-                  placeholder="Enviar Imagem"
-
-                />
-         
+              <ButtonDiferent
+                type="submit"
+                variant="contained"
+                placeholder="Enviar Imagem"
+              />
             </FormControl>
           </form>
         </Grid>

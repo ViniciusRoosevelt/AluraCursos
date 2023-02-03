@@ -6,8 +6,9 @@ type AppBartStyle = {
   title : string;
   buttonLabel : string;
   onClickButton?: MouseEventHandler<HTMLButtonElement> | undefined
+  children: any
 }
-export  const AppBarDifferent = ({title,buttonLabel,onClickButton} : AppBartStyle) => {
+export  const AppBarDifferent = ({title,buttonLabel,onClickButton,children}  : AppBartStyle) => {
     return (<Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
@@ -23,8 +24,8 @@ export  const AppBarDifferent = ({title,buttonLabel,onClickButton} : AppBartStyl
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
-          
           <Button onClick={onClickButton} color="inherit">{buttonLabel}</Button>
+          {children}
         </Toolbar>
       </AppBar>
     </Box>)

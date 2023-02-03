@@ -1,6 +1,4 @@
-import {
-  Card, Grid, Typography
-} from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 import { GetServerSideProps } from "next/types";
 import { parseCookies } from "nookies";
 import { useContext, useEffect, useState } from "react";
@@ -9,41 +7,56 @@ import { CardDifferent } from "../src/componnets/card";
 import { AuthContext } from "../src/context/AuthContext";
 import { api } from "../src/service/api";
 import { getApiClient } from "../src/service/axios";
+import jwt_decode from "jwt-decode";
 type Card = {
   id: number;
   title: string;
-  creator: "Vinicius";
+  creator: string;
   creator_id: number;
   description: string;
   image_url: string;
 };
-export default function Gallery() {
-  const apiClient = getApiClient();
+
+type UserToken = {
+  user_id: string;
+  email: String;
+  username: String;
+};
+
+type PageProps = {
+  cardFetch: Card[];
+  user_id: number;
+};
+export default function Gallery({ cardFetch, user_id }: PageProps) {
   const { user, changePage } = useContext(AuthContext);
   const [card, setCard] = useState<Card[]>([]);
-
+  const apiClient = getApiClient();
   useEffect(() => {
-    
-    card.length === 0 ? api.get(`/api/users/${user.id}/images/`).then((response) => {
-      console.log(card), setCard(response.data); 
-    }) : null;
-  }, [card]);
+    setCard(cardFetch);
+  }, []);
   const handleDeleteCard = (id_card: number, id_user: number) => {
     api.delete(`/api/users/${id_user}/images/${id_card}`);
     const copy = card.filter((item) => item.id != id_card);
     setCard(copy);
     alert("Card deleted");
   };
+
   return (
     <>
       <AppBarDifferent
-        title={`Olá,${user?.username}`}
+        title={!user?.username ? `Seja Bem-vindo` : `Olá,${user?.username}`}
         buttonLabel={"Forms"}
         onClickButton={() => {
           changePage("/formimages");
-        }}
-      />
-      
+        } } children={<Button
+          color="inherit"
+          onClick={() => {
+            changePage("/users");
+          }}
+        >
+          Users
+        </Button>}      />
+
       <Grid
         spacing={0}
         style={{ minHeight: "100vh", background: "#1c1917" }}
@@ -77,7 +90,6 @@ export default function Gallery() {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apiClient = getApiClient(ctx);
   const { ["next-auth"]: token } = parseCookies(ctx);
-
   if (!token) {
     return {
       redirect: {
@@ -87,9 +99,30 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  // await apiClient.get('/users')
+  const user: UserToken = jwt_decode(token);
 
+  const response: any = await fetch(
+    `http://localhost:3001/api/users/${user.user_id}/images/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  ).catch((error) => {
+    if (error.response.status === 401) {
+      alert("Usuário não está logado");
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+  });
+  const card = await response.json();
   return {
-    props: {},
+    props: {
+      cardFetch: card,
+    },
   };
 };
