@@ -1,11 +1,11 @@
-from PIL import Image
-
-from rest_framework.views import APIView
-from rest_framework import viewsets, status,views,permissions,generics,response
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework_simplejwt import views
-
 import os
+
+from PIL import Image
+from rest_framework import (generics, permissions, response, status, views,
+                            viewsets)
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.views import APIView
+from rest_framework_simplejwt import views
 
 from crud.models import *
 from crud.serializers import *
@@ -120,7 +120,7 @@ class FileImageCreatedFromUser(generics.ListAPIView):
 class ImageUploadViewSet(APIView):
     """Upload Images"""
     parser_classes = [MultiPartParser,FormParser]
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request,*args, **kwargs):
         images = Imagem.objects.filter(creator_id=self.kwargs['pk'])
