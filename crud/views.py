@@ -6,7 +6,7 @@ from rest_framework import (generics, permissions, response, status, views,
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.views import APIView
 from rest_framework_simplejwt import views
-
+from django.http import JsonResponse
 from crud.models import *
 from crud.serializers import *
 
@@ -125,18 +125,22 @@ class ImageUploadViewSet(APIView):
     def post(self, request,*args, **kwargs):
         images = Imagem.objects.filter(creator_id=self.kwargs['pk'])
         for image in images:
-            if image.name.lower() == str(request.data['name']).lower():
-                return response.Response("Duplicate name", status=status.HTTP_400_BAD_REQUEST)
+            if image.title.lower() == str(request.data['title']).lower():
+                return response.Response("Duplicate name", status=status.HTTP_409_CONFLICT)
         if str(request.data['image_url']).split('.')[1] != 'png' and str(request.data['image_url']).split('.')[1] != 'jpg':
             return response.Response("Invalid file extension. Only .jpg and .png files.", status=status.HTTP_400_BAD_REQUEST)
-        request.data.update( {'creator_id': self.kwargs['pk'] } )
-        print(request.data);
 
 
-        
-        serializer = FileImageCreatedFromUserUploadSerializer(data = request.data)
+
+        image_url = request.FILES['image_url']
+
+        serializer = ImagesSerializer(data=request.data,context={'image_url':image_url})
 
         
         if serializer.is_valid():
+            if request.data.get('image_url') is not None:
+                image_url.name = request.data.get('image_url').name
+                creator = self.kwargs['pk']
+                serializer.save(image_url=image_url,creator_id=creator)
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -89,7 +89,7 @@ class ImageCreatedFromUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Imagem
-        fields = ['id', 'creator', 'creator_id', 'image_url']
+        fields = ['id', 'creator', 'creator_id', 'image_url', 'title','description']
 
 
 class GetAllImagesFromUserSerializer(serializers.ModelSerializer):
@@ -107,11 +107,3 @@ class FileImageCreatedFromUserSerializer(serializers.ModelSerializer):
         model = Imagem
         fields = ['image_url']
 
-
-class FileImageCreatedFromUserUploadSerializer(Serializer):
-    file_upload = FileField()
-    image_url = serializers.ImageField(required=False)
-
-    class Meta:
-        model = Imagem
-        fields = ['file_upload', 'image_url']
