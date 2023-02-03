@@ -15,7 +15,7 @@ type RegisterRequestData = {
 };
 
 type User = {
-  user_id : string;
+  user_id: string;
   email: String;
   username: String;
 };
@@ -26,8 +26,8 @@ export default async function LoginRequest(data: LoginRequestData) {
       username: data.username,
       password: data.password,
     });
-    if(response.status == 404){
-      return null
+    if (response.status == 404) {
+      return null;
     }
     const refresh = response.data["refresh"];
     const acess = response.data["access"];
@@ -37,7 +37,7 @@ export default async function LoginRequest(data: LoginRequestData) {
     return {
       token: acess,
       user: {
-        id : user.user_id,
+        id: user.user_id,
         username: user.username,
         email: user.email,
       },
@@ -48,26 +48,27 @@ export default async function LoginRequest(data: LoginRequestData) {
 }
 
 export async function RegisterRequest(data: RegisterRequestData) {
-  try {
-    const response = await api.post("api/register/", {
+  const response = await api
+    .post("api/register/", {
       username: data.username,
       password: data.password,
       password2: data.password2,
       email: data.email,
       first_name: data.firstname,
       last_name: data.lastname,
+    })
+    .catch((error) => {
+      if (error.response.status === 400) {
+        alert("Campos inválidos tente novamente");
+      }
     });
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-  }
 }
 
 export async function recoverUserInformation(token: string) {
   const user: User = jwt_decode(token);
   return {
     user: {
-      id : user.user_id,
+      id: user.user_id,
       username: user.username,
       email: user.email,
     },

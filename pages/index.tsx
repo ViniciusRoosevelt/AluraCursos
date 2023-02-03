@@ -28,10 +28,10 @@ export default function Home() {
 
   return (
     <>
-        <AppBarDifferent title={"Login"} buttonLabel={"Register"} onClickButton={() => {changePage("/register")}} />  
+        <AppBarDifferent title={"Login"} buttonLabel={"Register"} onClickButton={() => { changePage("/register"); } } children={undefined} />  
     
     <Grid
-      spacing={0}
+
       style={{ minHeight: "100vh", background: "#1c1917" }}
       display="flex"
       flexDirection="column"

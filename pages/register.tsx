@@ -44,6 +44,12 @@ export default function RegisterPage() {
       firstname,
       lastname,
     });
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
   }
 
   return (
@@ -57,7 +63,6 @@ export default function RegisterPage() {
         children={undefined}
       />
       <Grid
-        spacing={0}
         style={{ minHeight: "100vh", background: "#1c1917" }}
         display="flex"
         flexDirection="column"

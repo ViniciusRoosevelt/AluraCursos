@@ -61,7 +61,7 @@ export default function UserPage({ users }: any) {
       />
 
       <Grid
-        spacing={0}
+
         style={{ minHeight: "100vh", background: "#1c1917" }}
         display="flex"
         flexDirection="column"
